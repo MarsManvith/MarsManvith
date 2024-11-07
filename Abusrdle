@@ -1,0 +1,238 @@
+// Manvith Kothapalli
+// 10/29/2024
+// CSE 122
+// P2: Absurdle
+// This class represents the Absurdle game, a variant of Wordle where the computer works
+// against the player by appearing to choose a single secret word but actually keeps 
+// a full list of potential words that match all guesses so far. With each guess, 
+// Absurdle prunes its set of words as little as possible, aiming to maximize 
+// the game's difficulty and length. The player tries to guess a hidden word
+// from a selected dictionary by receiving feedback on each guess
+// in the form of colored tiles that represent matches in position and occurrence.
+
+import java.util.*;
+import java.io.*;
+
+public class Absurdle  {
+    public static final String GREEN = "🟩";
+    public static final String YELLOW = "🟨";
+    public static final String GRAY = "⬜";
+
+    // [[ ALL OF MAIN PROVIDED ]]
+    public static void main(String[] args) throws FileNotFoundException {
+        Scanner console = new Scanner(System.in);
+        System.out.println("Welcome to the game of Absurdle.");
+
+        System.out.print("What dictionary would you like to use? ");
+        String dictName = console.next();
+
+        System.out.print("What length word would you like to guess? ");
+        int wordLength = console.nextInt();
+
+        List<String> contents = loadFile(new Scanner(new File(dictName)));
+        Set<String> words = pruneDictionary(contents, wordLength);
+
+        List<String> guessedPatterns = new ArrayList<>();
+        while (!isFinished(guessedPatterns)) {
+            System.out.print("> ");
+            String guess = console.next();
+            String pattern = recordGuess(guess, words, wordLength);
+            guessedPatterns.add(pattern);
+            System.out.println(": " + pattern);
+            System.out.println();
+        }
+        System.out.println("Absurdle " + guessedPatterns.size() + "/∞");
+        System.out.println();
+        printPatterns(guessedPatterns);
+    }
+
+    // [[ PROVIDED ]]
+    // Prints out the given list of patterns.
+    // - List<String> patterns: list of patterns from the game
+    public static void printPatterns(List<String> patterns) {
+        for (String pattern : patterns) {
+            System.out.println(pattern);
+        }
+    }
+
+    // [[ PROVIDED ]]
+    // Returns true if the game is finished, meaning the user guessed the word. Returns
+    // false otherwise.
+    // - List<String> patterns: list of patterns from the game
+    public static boolean isFinished(List<String> patterns) {
+        if (patterns.isEmpty()) {
+            return false;
+        }
+        String lastPattern = patterns.get(patterns.size() - 1);
+        return !lastPattern.contains("⬜") && !lastPattern.contains("🟨");
+    }
+
+    // [[ PROVIDED ]]
+    // Loads the contents of a given file Scanner into a List<String> and returns it.
+    // - Scanner dictScan: contains file contents
+    public static List<String> loadFile(Scanner dictScan) {
+        List<String> contents = new ArrayList<>();
+        while (dictScan.hasNext()) {
+            contents.add(dictScan.next());
+        }
+        return contents;
+    }
+
+    // Behavior:
+    //   - Filters the dictionary to only include words of a specified length.
+    // Parameters:
+    //   - contents: List<String> containing the words from the dictionary file.
+    //   - wordLength: the desired word length to filter by.
+    // Returns:
+    //   - Set<String>: a set of words matching the specified length.
+    // Exceptions:
+    //   - Throws IllegalArgumentException if wordLength is less than 1.
+    public static Set<String> pruneDictionary(List<String> contents, int wordLength) {
+        if (wordLength < 1) {
+            throw new IllegalArgumentException("Word Length has to be greater than 0");
+        }
+
+        Set<String> dictionaryWords = new HashSet<String>();
+
+        // Load all words into the set
+        for (String word : contents) {
+            dictionaryWords.add(word);
+        }
+
+        // remove words that do not match the specified length.
+        Iterator<String> iterator = dictionaryWords.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().length() != wordLength) {
+                iterator.remove();
+            }
+        }
+        return dictionaryWords;
+    }
+
+    // Behavior:
+    //   - Takes the player's current guess and creates possible match patterns
+    //     between the guess and words in the set.
+    //   - Groups words by these patterns, then selects the most frequent pattern, which
+    //     misleads the player by keeping the largest group of possible words
+    //     for the next guess, maximizing the challenge.
+    // Parameters:
+    //   - guess: the user's guessed word.
+    //   - words: a set of possible words left in the game.
+    //   - wordLength: the expected length of the guess.
+    // Returns:
+    //   - String: the pattern representing feedback for the guess.
+    // Exceptions:
+    //   - Throws IllegalArgumentException if set of words is empty 
+    //     or guess length does not match word length.
+    public static String recordGuess(String guess, Set<String> words, int wordLength) {
+        if (words.isEmpty() || guess.length() != wordLength) {
+            throw new IllegalArgumentException("Word set is empty or " 
+                                               + "guess length does not match word length");
+        }
+        
+        // Create a map of patterns as keys with sets of words that match each pattern
+        Map<String, Set<String>> patternMap = createPatternMap(words, guess);
+
+        // Determine the most common pattern by comparing word set sizes
+        int max = 0;
+        String maxPattern = "";
+        for (String keyPattern : patternMap.keySet()) {
+            int size = patternMap.get(keyPattern).size();
+            if (size > max) {
+                max = size;
+                maxPattern = keyPattern;
+            }
+        }
+
+        // Only keep words that match the most frequent pattern for the next guess round
+        words.clear();
+        words.addAll(patternMap.get(maxPattern));
+        return maxPattern;
+    }
+
+    // Behavior:
+    //   - Creates a feedback pattern for the guessed word by comparing it to the actual word.
+    // Parameters:
+    //   - word: the word being compared to the guess.
+    //   - guess: the user's guessed word.
+    // Returns:
+    //   - String: a pattern showing correct letters in position (GREEN), 
+    //             correct letters out of position (YELLOW), and incorrect letters (GRAY).
+    public static String patternFor(String word, String guess) {
+        List<String> translatedGuess = new ArrayList<String>();
+        Map<Character, Integer> map = new HashMap<Character, Integer>();
+
+        // Initialize with guessed letters
+        for (int i = 0; i < guess.length(); i++) {
+            translatedGuess.add(String.valueOf(guess.charAt(i)));
+        }
+
+        // Build a frequency map of letters in the actual word
+        char wordLetter = '\0';
+        for (int i = 0; i < word.length(); i++) {
+            wordLetter = word.charAt(i);
+            if (!map.containsKey(wordLetter)) {
+                map.put(wordLetter, 1);
+            } else {
+                map.put(wordLetter, map.get(wordLetter) + 1);
+            }
+        }
+
+        // Mark exact position matches with GREEN (correct letters in the correct position)
+        char guessLetter = '\0';
+        for (int i = 0; i < guess.length(); i++) {
+            guessLetter = guess.charAt(i);
+            wordLetter = word.charAt(i);
+            if (guessLetter == wordLetter) {
+                translatedGuess.set(i, GREEN);
+                map.put(wordLetter, map.get(wordLetter) - 1);
+            }
+        }
+
+        // Mark inexact matches with YELLOW if they appear in a different position in the word
+         for (int i = 0; i < guess.length(); i++) {
+            if (!translatedGuess.get(i).equals(GREEN)) { // Skip if already marked as GREEN
+                guessLetter = guess.charAt(i);
+                if (map.containsKey(guessLetter) && map.get(guessLetter) > 0) {
+                    translatedGuess.set(i, YELLOW); // Mark as YELLOW
+                    map.put(guessLetter, map.get(guessLetter) - 1); // Mark letter as used up
+                } else {
+                    translatedGuess.set(i, GRAY); // Mark as GRAY if no match
+                }
+            }
+        }
+
+        // Convert the list of match indicators to a single string pattern
+        String guesses = "";
+        for (String translated : translatedGuess) {
+            guesses += translated;
+        }
+        return guesses;
+    }
+
+    // Behavior:
+    //   - creates possible match patterns between the guess and words in the set. 
+    //   - It assigns words to a certain pattern based on 
+    //     what their pattern in comparison to the guess. 
+    // Parameters:
+    //   - words: the remaining words in the game.
+    //   - guess: the guessed word to compare against.
+    // Returns:
+    //   - Map<String, Set<String>>: where each key is a pattern 
+    //     and the value is the set of words matching that pattern.
+    public static Map<String, Set<String>> createPatternMap(Set<String> words, String guess) {
+        Map<String, Set<String>> patternMap = new TreeMap<String, Set<String>>();
+
+        for (String word : words) {
+            // Generate a pattern string for each word in comparison to the guess
+            String pattern = patternFor(word, guess);
+
+            // Add word to the set associated with its pattern
+            if (!patternMap.containsKey(pattern)) {
+                patternMap.put(pattern, new HashSet<String>());
+            }
+            patternMap.get(pattern).add(word);
+        }
+        return patternMap;
+    }
+}
