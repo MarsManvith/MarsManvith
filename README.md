@@ -24,3 +24,44 @@ Apache Spark, Pytorch, Matplotlib, Seaborn, React, Angular, Next.js, Node.js, Ex
 
 🎯 Current Goals
 I am currently seeking Software Engineering, AI/ML, or Robotics internships where I can apply my experience in machine learning and software development to build impactful, scalable technology.
+
+Gemini said
+For a GitHub README, you can use a mix of standard emojis and professional layout markers to make the text scannable and visually engaging. Since you want to emphasize AI/ML, Robotics, and Space without losing the General SWE appeal, using specific icons for different domains is a great way to categorize your expertise.
+
+Here is a version formatted specifically for a GitHub profile:
+
+Hi there, I'm Manvith! 👋
+I am a Computer Science student at the University of Washington (Expected June 2028) focused on building software that interfaces with the physical world—from autonomous robotics to large-scale astrophysical data pipelines.
++1
+
+✨ "Aspire to Inspire" — Bridging the gap between complex data, real-world application, and high-stakes performance.
+
+🛠️ Technical Toolkit
+
+Languages: Python, C++, Java, C, JavaScript/TypeScript, SQL, Assembly, MATLAB.
+
+
+Technologies: AWS (Bedrock, Lambda, DynamoDB, S3), PyTorch, Scikit-learn, OpenCV, Docker, Linux.
+
+🚀 What I’m Working On
+🧠 AI/ML & Computer Vision: Architected ML pipelines for the UW Gravitational Wave Astronomy Group to map Milky Way gas structures (improving pulsar distance accuracy by 20%). I also deployed SAM 2 for autonomous underwater navigation, boosting detection in murky environments.
++1
+
+🤖 Robotics & Systems: Specialized in low-level software-hardware interfaces, including implementing C++ star-identification algorithms for the Husky Satellite Lab. I also engineered PID-controlled stability systems for award-winning underwater ROVs.
++2
+
+☁️ Scalable Engineering: Developed Seekr, a serverless web app using AWS Bedrock and Titan Embeddings to automate research discovery for 300+ students.
++1
+
+🌟 Beyond the Code
+✍️ Author: Writing a book on the future of space exploration, covering the intersection of AI, policy, and colonization.
+
+👥 Mentor: Guided 20 students in ML RFI classification via a 1,000+ sample pipeline.
+
+🏆 Innovator: 2025 MATE ROV Sharkpedo Innovation Award winner.
+
+🎯 Current Goals
+I am currently seeking Software Engineering, AI/ML, or Robotics internships where I can apply my experience in deep learning and systems programming to build impactful, scalable technology.
+
+📫 How to reach me:
+LinkedIn: linkedin.com/in/manvith-kothapalli 
