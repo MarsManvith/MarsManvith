@@ -33,3 +33,6 @@ I am currently seeking **Software Engineering, AI/ML, or Robotics internships** 
 
 📫 **How to reach me:**
 * **LinkedIn:** [linkedin.com/in/manvith-kothapalli](https://linkedin.com/in/manvith-kothapalli)
+
+* **Devpost** [devpost.com/MarsManvith](https://devpost.com/MarsManvith)
+* **ORCID** [orcid.org/0009-0007-3378-0508](https://orcid.org/0009-0007-3378-0508)
