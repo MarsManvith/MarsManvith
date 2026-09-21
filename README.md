@@ -1,6 +1,6 @@
 # Hi there, I'm Manvith! 👋
 
-I am a ** Honors Computer Science student at the University of Washington** (Expected June 2028) focused on building software that interfaces with the physical world—from autonomous robotics to large-scale astrophysical data pipelines.
+I am a Honors Computer Science student at the University of Washington (Expected June 2028) focused on building software that interfaces with the physical world—from autonomous robotics to large-scale astrophysical data pipelines.
 
 ✨ **"Aspire to Inspire"** — *Bridging the gap between complex data, real-world application, and high-stakes performance.*
 
